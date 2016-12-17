@@ -1,0 +1,44 @@
+\begin{thebibliography}{1}
+
+\bibitem{adler2007content}
+B.~T. Adler and L.~De~Alfaro, ``A content-driven reputation system for the
+  wikipedia,'' in {\em Proceedings of the 16th international conference on
+  World Wide Web}, pp.~261--270, ACM, 2007.
+
+\bibitem{wiki:wiki}
+Wikipedia, ``Wikipedia --- {W}ikipedia{,} the free encyclopedia,'' 2016.
+\newblock [Online; accessed 16-Dec-2016].
+
+\bibitem{wiki:vandalism}
+Wikipedia, ``Vandalism --- {W}ikipedia{,} the free encyclopedia,'' 2016.
+\newblock [Online; accessed 16-Dec-2016].
+
+\bibitem{wiki:edit_war}
+Wikipedia, ``Edit warring --- {W}ikipedia{,} the free encyclopedia,'' 2016.
+\newblock [Online; accessed 16-Dec-2016].
+
+\bibitem{kittur2008can}
+A.~Kittur, B.~Suh, and E.~H. Chi, ``Can you ever trust a wiki?: impacting
+  perceived trustworthiness in wikipedia,'' in {\em Proceedings of the 2008 ACM
+  conference on Computer supported cooperative work}, pp.~477--480, ACM, 2008.
+
+\bibitem{blumenstock2008size}
+J.~E. Blumenstock, ``Size matters: word count as a measure of quality on
+  wikipedia,'' in {\em Proceedings of the 17th international conference on
+  World Wide Web}, pp.~1095--1096, ACM, 2008.
+
+\bibitem{zeng2006computing}
+H.~Zeng, M.~A. Alhossaini, L.~Ding, R.~Fikes, and D.~L. McGuinness, ``Computing
+  trust from revision history,'' tech. rep., DTIC Document, 2006.
+
+\bibitem{wohner2009assessing}
+T.~W{\"o}hner and R.~Peters, ``Assessing the quality of wikipedia articles with
+  lifecycle based metrics,'' in {\em Proceedings of the 5th International
+  Symposium on Wikis and Open Collaboration}, p.~16, ACM, 2009.
+
+\bibitem{adler2008assigning}
+B.~T. Adler, K.~Chatterjee, L.~De~Alfaro, M.~Faella, I.~Pye, and V.~Raman,
+  ``Assigning trust to wikipedia content,'' in {\em Proceedings of the 4th
+  International Symposium on Wikis}, p.~26, ACM, 2008.
+
+\end{thebibliography}

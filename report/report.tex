@@ -1,0 +1,277 @@
+%% This is file `elsarticle-template-1-num.tex',
+%%
+%% Copyright 2009 Elsevier Ltd
+%%
+%% This file is part of the 'Elsarticle Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% Template article for Elsevier's document class `elsarticle'
+%% with numbered style bibliographic references
+%%
+%% $Id: elsarticle-template-1-num.tex 149 2009-10-08 05:01:15Z rishi $
+%% $URL: http://lenova.river-valley.com/svn/elsbst/trunk/elsarticle-template-1-num.tex $
+%%
+% \documentclass[preprint,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+\documentclass[preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% The graphicx package provides the includegraphics command.
+\usepackage{graphicx}
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+% \usepackage{lineno}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%
+%% \biboptions{comma,round}
+
+% \biboptions{}
+
+\journal{Professor Torsten Suel}
+
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+\title{Wikipedia Reputation System Based on Edit History}
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author[label1]{Heng Lin}
+\author[label2]{Liang Niu}
+\address[label1]{hl2521@nyu.edu}
+\address[label2]{ln932@nyu.edu}
+
+\begin{abstract}
+%% Text of abstract
+  We will present a reputation system for the well know Wikipedia website based
+  on the edit history of their articles. In our system, editors will gain
+  reputation score from their edit(contribution) to some particular article,
+  they may also lose their score if they did some bad editting behavior like
+  vandalism\cite{adler2007content}. Our model is based on the previous work of Adler and
+  Alfaro \cite{adler2007content} , in their model they didn't consider the
+  absolute time for edit survival, we improved their model by adding factors
+  generated from editing frequency calculated using absolute time.
+  We have implemented a system to calculate the reputation score for all authors
+  in an article for Wikipedia, and we also evaluate our model by visualing the
+  reputation score for every word's author and compare it to the evaluation
+  system in Wikipedia.
+\end{abstract}
+
+\begin{keyword}
+Wikipedia \sep reputation system \sep Edit History
+%% keywords here, in the form: keyword \sep keyword
+
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+
+\end{keyword}
+
+\end{frontmatter}
+
+%% main text
+\section{Introduction}
+\subsection{Basic Concepts in Wikipedia}
+Wikipedia is a free online encyclopedia that aims to allow anyone to edit any
+article and create them. Wikipedia is the largest and most popular general
+reference work on the Internet and is ranked among the ten most popular
+websites. Wikipedia is owned by the nonprofit Wikimedia
+Foundation.\cite{wiki:wiki} Wikipedia is basically a set of articles that can be
+editted by anyone. Anonymous user can also be able to edit any articles without
+registration, though Wikipedia do provide registration function.
+Thus it will
+cause some problems. For example, some
+articles will be editted by users maliciously. They may want to damage some
+articles or introduce bias or mistakes into some particular articles for their
+own interest. This kind of behavior is also called ``Vandalism''
+\cite{wiki:vandalism}. Vandalism is very common in Wikipedia, thus there is a
+terminology ``Edit War''\cite{wiki:edit_war} to describe the circumstance when
+serval people are trying to take control of an article. In our model, we tried
+to build a reputation system for Wikipedia so that we can generate reputation
+score for every author of an article, by doing that, we can decide to trust high
+reputation authors more because they have proved that they can do good editting.
+\subsection{Reputation System}
+As we said above, the system we want to build is a reputation system for
+authors. To achieve this goal, what we are doing is to generate a score for
+every edit. It is easy to check all edit history of a single article in
+Wikipedia. By fetching the edit history data, we actually get all revision from
+the very beginning of the article to some particular time point. In our
+experiment, we used a crawler to fetch such data so we can have latest version
+of an article. The data in stored in the manner that every edit is a full
+article. It is stored not the patches between two versions but full version for
+every edit. \\
+For every edit, or for every revision, our model is to consider the edits around
+it. By saying some edits is ``around'' a edit, we are actually saying that
+all revisions are sorted in time sequence, and some edits are closed to a edit
+either they are n-neighbors (in particular, we take n equals to 3 or 10) of this
+edit or they have short time gap with this edit (in our model, we take this time
+gap as 1hr).
+\subsection{Applications}
+Reputation system can play a significant role in building a healthy wiki
+community, because it promotes the quality of articles in many ways. If editors
+can view previous editting history and their authors' reputation, they can
+decide whether to keep the edit or not more easily. If we compare the Wikipedia
+community, which is a knowledge contributing community, to Github, which is a
+code contributing community, then those who have high reputation are like
+programmers who have many stars and followers. High reputation will make an
+author looks more reliable and help other authors make decisions.\\
+Besides, we can visulize the reputation distribution of an article. through that
+way, it will be obvious that what kinds of article will attract more high
+reputation authors and based on that, it will be intriguing to discuss the
+relationship between articles' topic and their authors. We tried to do that a
+little bit, even not fully discovered. And another way to use reputation is to
+reward those high reputation authors to promote their passion. Also reputation
+score itself is some kind of honor on the Internet.
+
+
+% template for inserting pictures
+% \begin{figure}[h]
+% \centering\includegraphics[width=0.4\linewidth]{figure}
+% \caption{Figure caption}
+% \end{figure}
+
+\section{Related Work}
+% adlar, zeng, 2008 length->quality, assign trust
+The work most related to ours is \cite{adler2007content}, where Wikipedia
+revisions are used to evaluate authors' reputation. Our work is mostly based on
+theirs and then do some change or improvement. Also, to discuss the relationship
+between reputation and article quality is inspired by Aniket Kittur's work done
+in 2008 \cite{kittur2008can}, in which they use Amazon's crowdsourcing service
+called ``Amazon Mechanical Turk'' to evalute the quality of a Wikipedia article.
+They found that people tend to give higher score to those articles that have
+more high reputation authors. This leads us to use quality of an article as a
+evalutation metrics. To evaluate article's quality, we found that Joshua E.
+Blumenstock's work \cite{blumenstock2008size} is a quite intuitive way.
+Actually, at the early stage of our thinking, we have considered using word
+length as an important factor to evaluate edit quality. Zeng's work
+\cite{zeng2006computing} is one of the most successful work done in 2000s, in
+which they used dynamic Bayesian Network to evaluate quality or trust for an edit. We
+took a quick look on it but the Bayesian Network method is not we are looking
+for, we hope to find a way that use edit history more directly to reflect how
+good a revision is. In many edit history based systems, like adlar's work
+\cite{adler2007content} and Wohner's work \cite{wohner2009assessing}, editting
+distance is used to evaluate difference between two versions. And we got the
+idea of coloring text as visulization from adler's work
+\cite{adler2008assigning}, in which they assigned text color to compare
+difference between two revisions. We use coloring in a different way, we assign
+words colors according to their authors' reputation to see an article's authors'
+distribution, which will be explained later.
+
+
+
+\section{Reputation Model}
+\subsection{Notation}
+\subsection{Adlar's Model}
+% about how we reproduce adlar's model and give out experiments result for a
+% single page
+
+\subsection{Take Timestamp into Account}
+% about asuumption of authors' passion, how we introduce time stamp as a factor,
+% and how to adjust model, and why we do this and the benefit and give out result.
+
+\subsection{Edit War Optimization}
+
+\section{Authorship}
+% authorship defination, usage, algrithm introduction, why we use it.
+
+\subsection{Authorship as Evaluation}
+% talk about authorship and visulization, and based on visulization discuss our
+% result and the original model's result. 
+
+\subsection{Authorship and Article Quality}
+
+\subsection{Conclusion}
+
+\section{Self Assessment}
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+
+%% \section{}
+%% \label{}
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%% Usage of \cite is as follows:
+%%   \cite{key}          ==>>  [#]
+%%   \cite[chap. 2]{key} ==>>  [#, chap. 2]
+%%   \citet{key}         ==>>  Author [#]
+
+%% References with bibTeX database:
+
+% \bibliographystyle{model1-num-names}
+\bibliographystyle{ieeetr}
+
+% \newpage
+
+\section{\refname}
+
+\bibliography{sample}
+
+
+\end{document}
