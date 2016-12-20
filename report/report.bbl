@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{adler2007content}
 B.~T. Adler and L.~De~Alfaro, ``A content-driven reputation system for the
@@ -40,5 +40,9 @@ T.~W{\"o}hner and R.~Peters, ``Assessing the quality of wikipedia articles with
 B.~T. Adler, K.~Chatterjee, L.~De~Alfaro, M.~Faella, I.~Pye, and V.~Raman,
   ``Assigning trust to wikipedia content,'' in {\em Proceedings of the 4th
   International Symposium on Wikis}, p.~26, ACM, 2008.
+
+\bibitem{myers1986ano}
+E.~W. Myers, ``Ano (nd) difference algorithm and its variations,'' {\em
+  Algorithmica}, vol.~1, no.~1-4, pp.~251--266, 1986.
 
 \end{thebibliography}

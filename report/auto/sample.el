@@ -10,6 +10,7 @@
     "blumenstock2008size"
     "zeng2006computing"
     "wohner2009assessing"
-    "adler2008assigning"))
+    "adler2008assigning"
+    "myers1986ano"))
  :bibtex)
 

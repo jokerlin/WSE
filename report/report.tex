@@ -220,13 +220,34 @@ difference between two revisions. We use coloring in a different way, we assign
 words colors according to their authors' reputation to see an article's authors'
 distribution, which will be explained later.
 
-
-
 \section{Reputation Model}
 \subsection{Notation}
-\subsection{Adlar's Model}
+We use the similar notation in Adler \cite{adler2007content}. The following is
+the notations we are using:\\
+For some particular article, let's say the Wikipedia entry ``Reverse
+Engineering'', there are many versions of it.
+For all the versions, we sorted them in a time sequence, and thus there are
+versions from very beginning to latest. We call these versions $v_0, v_1, v_2$
+and so on. And we assume $v_0$ is empty, which means we divide the creating of
+an article into two versions, one is $v_0$, the empty article, one is $v_1$, the
+first version with content. In most cases, the creator of an article will give
+some content to it, so we are actually adding an empty version before the first
+version. And thus we introduce the concept revision:\\
+we use $r_i$ means the $i_{th}$ edit of an article, which is used to refer to
+the change from $v_{i-1} to v_i$.\\
+$txt(i,j)$, in which $0 < i \leq j \leq n$. This is the 
+$d$ edit distance, 
+
+\subsection{Adler's Model}
 % about how we reproduce adlar's model and give out experiments result for a
 % single page
+In this part we will simply introduce Adler's model of content-driven reputation
+system in a versioned document and our implementation.\\
+Basically, there are two rules in Adler's model, the first one is based on what
+they called ``Text Survial'', 
+When we are implementing this model, we are using Google's library called
+``diff\_match\_patch'' to help us do the calculation, which is based on the
+algorithm described in Myers' work \cite{myers1986ano}.
 
 \subsection{Take Timestamp into Account}
 % about asuumption of authors' passion, how we introduce time stamp as a factor,
