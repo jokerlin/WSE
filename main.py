@@ -10,14 +10,17 @@ import re
 PAGE_ID = '18935488'
 
 # PARAMETERS
-C_SCALE = 13.08     # > 0
-C_TEXT = 0.6        # [0, 1]
-C_LEN = 0.6         # [0, 1]
-C_SLACK = 2.20      # >= 1
-C_PUNISH = 19.09    # >= 1
-C_MAXREP= 22026     # MAX VALUE OF REPUTATION
-CONTINIOUS_TOKEN = 4 # for authorship tracking
+C_SCALE = 13.08         # > 0
+C_TEXT = 0.6            # [0, 1]
+C_LEN = 0.6             # [0, 1]
+C_SLACK = 2.20          # >= 1
+C_PUNISH = 19.09        # >= 1
+C_MAXREP = 22026        # MAX VALUE OF REPUTATION
+C_TIMESTAMP = 1         # >= 1
+CONTINIOUS_TOKEN = 4    # for authorship tracking
 
+# DEBUG
+max_rep_list = set()
 
 # class of wiki
 class WikiRevision(object):
@@ -34,6 +37,8 @@ class WikiRevision(object):
 def read_json():
     wiki_list = []
     filename_list = os.listdir('./store')
+    if '.DS_Store' in filename_list:
+        filename_list.remove('.DS_Store')
     # read json to Wiki Structure
     for filename in filename_list:
         f = open('./store/' + filename,'r')
@@ -105,7 +110,7 @@ def rule_1(i, j, l, r):
     # print authorship_calculate(i, j, l)
     # print txt(l[i - 1].content, l[i].content)
 
-    if authorship_calculate(i, j, l) == 0 or txt(l[i - 1].content, l[i].content) == 0:
+    if l[i].user == l[j].user or txt(l[i - 1].content, l[i].content) == 0:
         return 0
     return C_SCALE * C_TEXT * authorship_calculate(i, j, l) / txt(l[i - 1].content, l[i].content) \
         * pow(txt(l[i - 1].content, l[i].content), C_LEN) \
@@ -115,10 +120,18 @@ def rule_1(i, j, l, r):
 # reputation update due to edit survival
 # v is NOT DEFINED YET
 def rule_2(i, j, l, r):
+    if d(l[i-1].content, l[i].content) == 0 or l[i].user == l[j].user:
+        return 0
     q = (C_SLACK * d(l[i - 1].content, l[j].content) - d(l[i].content, l[j].content)) / d(l[i-1].content, l[i].content)
     q = q * C_PUNISH if q < 0 else q
     q = q * C_SCALE * (1 - C_TEXT) * pow(d(l[i-1].content, l[i].content), C_LEN) * math.log10(1 + r[l[j].user])
     return q
+
+
+# timestamp factor
+def rule_3(i, j, l, r):
+    f = 0
+    return f
 
 
 # If the author is anonymous
@@ -131,6 +144,8 @@ def is_ip(user):
 
 def compute_reputation(wiki_list, reputation_list):
     for i in range(1, len(wiki_list) - 1):
+        # DEBUG
+        print 'WORKING ON ' + str(wiki_list[i].revid)
         j = i + 1
         while j - i <= 10 and j < len(wiki_list):
             if not is_ip(wiki_list[i].user):
@@ -139,8 +154,13 @@ def compute_reputation(wiki_list, reputation_list):
                     reputation_list[wiki_list[i].user] = 0.1
                 elif reputation_list[wiki_list[i].user] > C_MAXREP:
                     reputation_list[wiki_list[i].user] = C_MAXREP
+
+                    # DEBUG
+                    print str(wiki_list[i].revid) + ' - ' + wiki_list[i].user + " Maximum Alert!"
+                    max_rep_list.add(wiki_list[i].revid)
                 # DEBUG
-                print "[RULE1] " + str(i) + '-' + wiki_list[i].user + ': ' + str(reputation_list[wiki_list[i].user])
+                # print "[RULE1] " + wiki_list[i].revid + '-' + wiki_list[i].user \
+                    # + ': ' + str(reputation_list[wiki_list[i].user])
 
             if j - i <= 3:
                 if not is_ip(wiki_list[i].user):
@@ -150,8 +170,13 @@ def compute_reputation(wiki_list, reputation_list):
                     elif reputation_list[wiki_list[i].user] > C_MAXREP:
                         reputation_list[wiki_list[i].user] = C_MAXREP
 
+                        # DEBUG
+                        max_rep_list.add(wiki_list[i].revid)
+                        print str(wiki_list[i].revid) + ' - ' + wiki_list[i].user + " Maximum Alert!"
+
                     # DEBUG
-                    print "[RULE2] " + str(i) + '-' + wiki_list[i].user + ': ' + str(reputation_list[wiki_list[i].user])
+                    # print "[RULE2] " + wiki_list[i].revid + '-' + wiki_list[i].user \
+                        # + ': ' + str(reputation_list[wiki_list[i].user])
 
             j += 1
 
@@ -159,12 +184,25 @@ def compute_reputation(wiki_list, reputation_list):
 
 
 def main():
+    # read json from file
     wiki_list = read_json()
 
     # DEBUG
     print 'Before Pre-processing wiki_list LENGTH: ', str(len(wiki_list))
 
+    # pre-processing
     wiki_list = pre_processing(wiki_list)
+
+    # wiki author list
+    wiki_authors = set()
+    for obj in wiki_list:
+        if not is_ip(obj.user):
+            wiki_authors.add(obj.user)
+
+    # DEBUG
+    # for author in wiki_authors:
+    #     print author,
+    # return
 
     # DEBUG
     print 'After Pre-processing wiki_list LENGTH: ', str(len(wiki_list))
@@ -174,9 +212,11 @@ def main():
     for wiki_obj in wiki_list:
         reputation_list[wiki_obj.user] = 0.1
     reputation_list = compute_reputation(wiki_list, reputation_list)
+    reputation_list = sorted(reputation_list.iteritems(), key=lambda reputation: reputation[1], reverse=True)
 
     # DEBUG
-    print reputation_list[wiki_list[-1].user]
+    print reputation_list
+    print max_rep_list
 
 if __name__ == '__main__':
     main()
