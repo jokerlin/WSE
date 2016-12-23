@@ -34,6 +34,9 @@
 
 %% The graphicx package provides the includegraphics command.
 \usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+
 %% The amssymb package provides various useful mathematical symbols
 \usepackage{amssymb}
 %% The amsthm package provides extended theorem environments
@@ -233,25 +236,126 @@ an article into two versions, one is $v_0$, the empty article, one is $v_1$, the
 first version with content. In most cases, the creator of an article will give
 some content to it, so we are actually adding an empty version before the first
 version. And thus we introduce the concept revision:\\
+\subsubsection{Adler's notation}
 we use $r_i$ means the $i_{th}$ edit of an article, which is used to refer to
 the change from $v_{i-1} to v_i$.\\
-$txt(i,j)$, in which $0 < i \leq j \leq n$. This is the 
-$d$ edit distance, 
+$d$ edit distance, not like traditional editting distance calculation, we will
+measure edit distance based on words, somehow like the tool ``diff''.\\
+$a_i$ is the author of $v_i$. Because there may be continuous edits done by the
+same author, we will eliminate this situation by merging a few continuous edit
+done by same author to one edit, or keep only one with others deleted. One thing
+that is different from Adler's is that in our improvement, we considered
+anonymous user(even though they are anonymous, we can get their IP address
+through Wikipedia's API) as useful users. So this notation has different meaning
+in Adler's model and our model. Adler exclude anonymous authors' contribution,
+but we consider them as registered users.\\
+$txt(i,j)$, in which $0 < i \leq j \leq n$. This is the notation to note how
+many words that are introduced in the edit of $v_i$ are still left in $v_j$.\\
+If $i = j$, then this means the amount of words that added to this article in
+$r_j$. All the amount is measured by number of words.\\
+$d(v_i,v_j)$, in which $0 < i \leq j \leq n$. It is edit distance between $v_i$
+and $v_j$. When $i=j$, of course it equals to 0.\\
+\subsubsection{Our own notation}
+And the following notations is for our improvement of Adler's model. Cause we
+take absolute time into account, we define that:\\
+$t(r_i)$, is the timestamp of edit $r_i:from r_{i-1} to r_i$.\\
+And also $g(r_i)$, the average edit time gap for some edit $r_i$. It is computed
+by the following process:\\
+For some edit $r_i$, find all the edit histories that happened in $[
+  t(r_i)-30min, t(r_i)+30min]$, say there are $n$ edit between this time gap.
+Then $g(r_i) = \frac{60min}{n}$. This notation is related with the edit
+frequency around some edit. Exeptions: for first a few edits and last a few
+edits, we use a different formula: $g(r_i) = \frac{t_l}{n}$ in which $t_l$ is
+the longest time that we can trace to, for first a few edits, this time is
+$30min+t(r_i)$, for last a few edits, this time is $30min+(t(r_k)-r(r_i))$, in
+which $r_k$ is the newest edit.
+\subsection{Concepts}
+We introduce some concepts that is useful for our model.\\
+First one is authorship. Authorship is defined as the authorship of a word. Say
+an article ``Reverse Engineering'', there are about 800 authors. And we can
+imagine that different words are writed by different users. There is an
+algorithm that can show for a particular version of this article, who is the
+author of which part. Say an article has 5 words: $w_0 to w_4$, and this
+algorithm can show the authors for all these 5 words: $a_0 to a_4$. Authorship
+is an important concept, we will use it in calculating $txt(i,j)$ and also in
+our improvement. We will also show authorship of an article.\\
 
 \subsection{Adler's Model}
 % about how we reproduce adlar's model and give out experiments result for a
 % single page
 In this part we will simply introduce Adler's model of content-driven reputation
 system in a versioned document and our implementation.\\
+\subsubsection{Rule 1}
 Basically, there are two rules in Adler's model, the first one is based on what
-they called ``Text Survial'', 
-When we are implementing this model, we are using Google's library called
-``diff\_match\_patch'' to help us do the calculation, which is based on the
-algorithm described in Myers' work \cite{myers1986ano}.
+they called ``Text Survial''. It is the idea that if text introduced by $r_i$ is
+still present in $v_j$, then this can indicate that the author of $v_j$ agrees
+that $r_i$ is a good or valuable edit. Thus, they proposed their first rule:\\
+\newtheorem{ruullee}{RULE}
+\begin{ruullee}[(reputation update due to text survival)]
+  When the revision $r_j$ occurs, for all $0<j<i$ such that $j-i \leq 10$ and
+  $a_j \neq a_i$, we add to the reputation of $a_i$ the amount:\\
+  \[
+  \centering c_{scale}*c_{text}*\frac{txt(i,j)}{txt(i,i)}*(txt(i,i))^{c_{len}}*log(1+R(a_j,r_j))
+  \]
+  where $c_{scale} > 0, c_{text} \in [0,1]$, and $c_{len} \in [0,1]$ are
+  parameters, and where $R(a_j, r_j)$ is the reputation of $a_j$ at the time
+  $r_j$ is preformed. 
+\end{ruullee}
+\subsubsection{Rule 2}
+The second rule is based on the idea of ``Edit Survival'', the rule is as
+follows:\\
+\begin{ruullee}[(reputation update due to edit survival)]
+  When the revision $r_j$ occurs, for all $0<i<j$ such that $j-i \leq 3$, we add
+  to the reputation of $a_i$ an amount q determined as follows. If $a_j=a_i$or
+  $d(v_{i-1}, v_i)=0$, then $q=0$; otherwise, q is determined by the following
+  algorithm.
+  \[
+    \centering
+    q := \frac{c_{slack}*d(v_{i-1},v_j) - d(v_i,v_j)}{d(v_{i-1},v_i)}
+  \]
+       if $q<0$ then $q:=q*c_{punish}$ endif
+  \[
+    \centering
+    q := q*c_{scale}*(1-c_{text})*(d(v_{i-1}, v_i))^{c_{len}}*log(1+R(a_j,r_j))
+  \]
+\end{ruullee}
+Basic idea behind this rule is that using edit distance to trace how much left
+for a edit in next 3 edits. The more left, the more reputation should be given
+to the author.
 
-\subsection{Take Timestamp into Account}
+\subsubsection{Implementation}
+When we are implementing this model, we are using Google's library called
+``diff\_match\_patch'' to help us do the edit distance calculation, which is
+based on the algorithm described in Myers' work \cite{myers1986ano}.\\
+We also discovered some details in his model. What he didn't mentioned is that
+authorship 
+
+
+\subsection{Our Improvement}
+\subsubsection{Take Timestamp into Account}
 % about asuumption of authors' passion, how we introduce time stamp as a factor,
 % and how to adjust model, and why we do this and the benefit and give out result.
+% AAAnd also, we take IP into account.
+\subsubsection{Take Anonymous Users into Account}
+
+\begin{figure}[h]
+  \centering
+
+    \begin{subfigure}{0.5\textwidth}
+    \centering \includegraphics[width=0.9\linewidth]{pic/wiki1.png}
+    \caption{TOP 10 by edits}
+    \label{fig:wiki1}
+    \end{subfigure}
+
+    \begin{subfigure}{0.5\textwidth}
+    \centering \includegraphics[width=0.9\linewidth]{pic/wiki2.png}
+    \caption{TOP 10 by added text}% ``Reverse Engineering''}
+    \label{fig:wiki1}
+    \end{subfigure}
+
+  \caption{TOP 10 by two metrics of ``Reverse Engineering''}
+\end{figure}
+
 
 \subsection{Edit War Optimization}
 

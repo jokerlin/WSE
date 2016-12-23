@@ -8,7 +8,13 @@
     "elsarticle"
     "elsarticle12"
     "graphicx"
+    "caption"
+    "subcaption"
     "amssymb")
+   (LaTeX-add-labels
+    "fig:wiki1")
+   (LaTeX-add-environments
+    "ruullee")
    (LaTeX-add-bibliographies
     "sample"))
  :latex)
