@@ -11,6 +11,7 @@
     "zeng2006computing"
     "wohner2009assessing"
     "adler2008assigning"
-    "myers1986ano"))
+    "myers1986ano"
+    "de2013attributing"))
  :bibtex)
 

@@ -45,4 +45,9 @@ B.~T. Adler, K.~Chatterjee, L.~De~Alfaro, M.~Faella, I.~Pye, and V.~Raman,
 E.~W. Myers, ``Ano (nd) difference algorithm and its variations,'' {\em
   Algorithmica}, vol.~1, no.~1-4, pp.~251--266, 1986.
 
+\bibitem{de2013attributing}
+L.~De~Alfaro and M.~Shavlovsky, ``Attributing authorship of revisioned
+  content,'' in {\em Proceedings of the 22nd international conference on World
+  Wide Web}, pp.~343--354, ACM, 2013.
+
 \end{thebibliography}

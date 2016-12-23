@@ -328,15 +328,20 @@ When we are implementing this model, we are using Google's library called
 ``diff\_match\_patch'' to help us do the edit distance calculation, which is
 based on the algorithm described in Myers' work \cite{myers1986ano}.\\
 We also discovered some details in his model. What he didn't mentioned is that
-authorship 
-
+authorship is used in the calculation process. We used an open source code to
+compute the authorship \cite{de2013attributing}. 
 
 \subsection{Our Improvement}
 \subsubsection{Take Timestamp into Account}
 % about asuumption of authors' passion, how we introduce time stamp as a factor,
 % and how to adjust model, and why we do this and the benefit and give out result.
-% AAAnd also, we take IP into account.
+After we discussed about Adler's model, we found out that Adler didn't consider
+the absolute time of some edit's survial (or text survival). The factors that he
+considered are in next a few edits, how edit contents are kept. Thus we think
+that we should take this into account.\\
+An naive and intuitive way of thinking this is to 
 \subsubsection{Take Anonymous Users into Account}
+% we take IP into account.
 
 \begin{figure}[h]
   \centering
